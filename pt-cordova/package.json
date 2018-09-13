@@ -1,0 +1,16 @@
+{
+  "name": "pt-cordova",
+  "version": "0.0.1",
+  "description": "cordova apps built with positron",
+  "main": "lib/index.js",
+  "license": "Apache-2.0",
+  "scripts": {},
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "cordova": "^8.0.0",
+    "mocha": "^5.2.0",
+    "plugman": "^2.0.0",
+    "standard": "^12.0.1"
+  }
+}

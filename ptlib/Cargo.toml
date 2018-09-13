@@ -1,0 +1,13 @@
+[package]
+name = "ptlib"
+version = "0.1.0"
+authors = ["neonphog <neonphog@gmail.com>"]
+
+[lib]
+#crate-type = ["staticlib", "cdylib"]
+crate-type = ["staticlib"]
+
+[dependencies]
+
+[build-dependencies]
+cbindgen = "0.6.3"
