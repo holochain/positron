@@ -1,0 +1,17 @@
+{
+  "name": "positron",
+  "version": "0.0.1",
+  "description": "Holochain composer framework abstraction for generating web apps across electron and cordova",
+  "scripts": {
+    "test": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/holochain/positron.git"
+  },
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-cli": "^2.0.1"
+  }
+}
