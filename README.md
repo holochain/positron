@@ -5,6 +5,9 @@ Holochain composer framework abstraction for generating web apps across electron
 ## Usage
 
 ```shell
+# setup npm
+npm install
+
 # prepare the environment
 npm run prep
 
@@ -15,5 +18,5 @@ npm run build-electron
 npm run electron
 
 # build the android module
-npm run build-android
+ANDROID_HOME=<??> npm run build-android
 ```
