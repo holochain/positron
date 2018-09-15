@@ -1,1 +1,1 @@
-include ':app', ':ptlib', ':ptlibtest'
+include ':ptlib', ':ptlibtest'

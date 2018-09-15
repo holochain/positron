@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "description": "Holochain composer framework abstraction for generating web apps across electron and cordova",
   "scripts": {
-    "test": "gulp"
+    "prep": "gulp prep",
+    "build-electron": "gulp build-electron",
+    "build-android": "gulp build-android",
+    "electron": "npm start --prefix pt-electron"
   },
   "repository": {
     "type": "git",
@@ -11,7 +14,7 @@
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.0",
     "gulp-cli": "^2.0.1"
   }
 }

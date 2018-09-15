@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "install": "node-gyp-build",
-    "prebuild": "prebuildify -a --strip",
+    "prebuild": "node-gyp rebuild && prebuildify -a --strip",
     "test": "standard lib && node-gyp rebuild && mocha 'lib/**/*.test.js'"
   },
   "license": "Apache-2.0",
