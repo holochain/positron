@@ -39,7 +39,8 @@ find_library( # Sets the name of the path variable.
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
 
-target_link_libraries( ptlib-android-binding "${PROJECT_SOURCE_DIR}/../../ptlib/target/i686-linux-android/release/libptlib.a" )
+#target_link_libraries( ptlib-android-binding "${PROJECT_SOURCE_DIR}/../../ptlib/target/i686-linux-android/release/libptlib.a" )
+target_link_libraries( ptlib-android-binding "${PROJECT_SOURCE_DIR}/../ptlib-static-libs/${ANDROID_ABI}/libptlib.a" )
 target_link_libraries( # Specifies the target library.
                        ptlib-android-binding
 

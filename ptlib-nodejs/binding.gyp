@@ -19,7 +19,7 @@
       'cflags': [
       ],
       'libraries': [
-        "<!(node -e \"console.log(require('path').join('..', '..', 'ptlib', 'target', 'debug', 'libptlib.a'))\")"
+        "<!(node -e \"console.log(require('path').join('..', '..', 'ptlib', 'target', 'release', 'libptlib.a'))\")"
       ],
       'conditions': [
       ],
