@@ -9,49 +9,92 @@
     <p>The current ptlib.PositronContext state is: <span id="result">loading...</span></p>
     <p><input type="button" value="Increment" id="buttonIncr" /></p>
     <script>
-const api = (() => {
-  // if we are in `electron` mode
-  if (require) {
-    const { ipcRenderer } = require('electron')
-    return {
-      on: (cb) => {
-        ipcRenderer.on('pt-msg', (evt, data) => {
-          cb(JSON.parse(data))
-        })
-      },
-      send: (data) => {
-        ipcRenderer.send('pt-msg', JSON.stringify(data))
-      }
+function getApiElectron () {
+  const { ipcRenderer } = require('electron')
+  return {
+    on: (cb) => {
+      ipcRenderer.on('pt-msg', (evt, data) => {
+        cb(JSON.parse(data))
+      })
+    },
+    send: (data) => {
+      ipcRenderer.send('pt-msg', JSON.stringify(data))
     }
   }
-  throw new Error('could not initialize api!')
-})()
-
-const resultElem = document.getElementById('result')
-const incrButton = document.getElementById('buttonIncr')
-function dispResult (data) {
-  while (resultElem.childNodes.length) {
-    resultElem.removeChild(resultElem.childNodes[0])
-  }
-  resultElem.appendChild(document.createTextNode(data))
 }
 
-api.on((data) => {
-  if (data.error) {
-    dispResult('Error: ' + data.error)
-  } else {
-    dispResult(data.response.state)
-  }
-})
-api.send({
-  method: 'peek'
-})
-
-incrButton.onclick = () => {
-  api.send({
-    method: 'incr'
+function getApiCordova () {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script')
+    s.src = 'cordova.js'
+    s.onerror = (e) => {
+      reject(e)
+    }
+    s.onload = () => {
+      console.log('loaded cordova!!!')
+      document.addEventListener('ptlibready', () => {
+        ptlib.onReady.then(() => {
+          let myCb = () => {}
+          resolve({
+            on: (cb) => {
+              myCb = cb
+            },
+            send: async (data) => {
+              myCb(await ptlib.call(data))
+            }
+          })
+        }, (err) => {
+          reject(err)
+        })
+      }, false)
+    }
+    document.head.appendChild(s)
   })
 }
+
+async function getApi () {
+  if (typeof require === 'function') {
+    return getApiElectron()
+  } else {
+    return await getApiCordova()
+  }
+}
+
+async function ptDemo () {
+  const api = await getApi()
+
+  const resultElem = document.getElementById('result')
+  const incrButton = document.getElementById('buttonIncr')
+  function dispResult (data) {
+    while (resultElem.childNodes.length) {
+      resultElem.removeChild(resultElem.childNodes[0])
+    }
+    resultElem.appendChild(document.createTextNode(data))
+  }
+
+  api.on((data) => {
+    if (data.error) {
+      dispResult('Error: ' + data.error)
+    } else {
+      dispResult(data.response.state)
+    }
+  })
+  api.send({
+    method: 'peek'
+  })
+
+  incrButton.onclick = () => {
+    api.send({
+      method: 'incr'
+    })
+  }
+}
+
+ptDemo().then(() => {
+}, (err) => {
+  console.error(err)
+  alert(err)
+})
     </script>
   </body>
 </html>
