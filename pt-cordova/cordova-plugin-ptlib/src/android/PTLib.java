@@ -15,13 +15,13 @@ import android.provider.Settings;
 public class PTLib extends CordovaPlugin {
     public static final String TAG = "PTLib";
 
-    private int _state = 0;
+    private PositronContext _ctx;
 
     /**
      * Constructor.
      */
     public PTLib() {
-      this._state = 0;
+      this._ctx = new PositronContext();
     }
 
     /**
@@ -52,14 +52,13 @@ public class PTLib extends CordovaPlugin {
             callbackContext.success(s);
           } else if ("peek".equals(method)) {
             JSONObject s = new JSONObject();
-            s.put("state", this._state);
+            s.put("state", this._ctx.peek());
             JSONObject r = new JSONObject();
             r.put("response", s);
             callbackContext.success(r);
           } else if ("incr".equals(method)) {
-            this._state += 1;
             JSONObject s = new JSONObject();
-            s.put("state", this._state);
+            s.put("state", this._ctx.incr());
             JSONObject r = new JSONObject();
             r.put("response", s);
             callbackContext.success(r);

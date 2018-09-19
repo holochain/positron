@@ -16,6 +16,7 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <platform name="android">
+        <hook src="scripts/after-android-add.js" type="after_platform_add" />
         <allow-intent href="market:*" />
     </platform>
     <platform name="ios">
@@ -25,5 +26,5 @@
     <plugin name="cordova-plugin-whitelist" spec="1" />
     <plugin name="cordova-plugin-ptlib" spec="../cordova-plugin-ptlib" />
     <engine name="browser" spec="^5.0.4" />
-    <engine name="android" spec="^7.1.1" />
+    <engine name="android" spec="~7.0.0" />
 </widget>
