@@ -1,0 +1,20 @@
+{
+  "name": "cordova-plugin-ptlib",
+  "version": "0.0.1",
+  "description": "Cordova Positron Plugin",
+  "cordova": {
+    "id": "cordova-plugin-ptlib",
+    "platforms": [
+      "android",
+      "browser"
+    ]
+  },
+  "keywords": [
+    "cordova",
+    "positron",
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-browser"
+  ],
+  "license": "Apache 2.0"
+}

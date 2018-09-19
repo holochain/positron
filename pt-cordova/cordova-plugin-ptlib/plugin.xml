@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:rim="http://www.blackberry.com/ns/widgets"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="cordova-plugin-ptlib"
+    version="0.0.1">
+    <name>PTLib</name>
+    <description>Cordova Positron Plugin</description>
+    <license>Apache 2.0</license>
+    <keywords>cordova,positron</keywords>
+
+    <js-module src="www/ptlib.js" name="ptlib">
+        <clobbers target="ptlib" />
+    </js-module>
+
+    <!-- android -->
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="PTLib" >
+                <param name="android-package" value="host.holo.ptlib.PTLib"/>
+            </feature>
+        </config-file>
+
+        <source-file src="src/android/PTLib.java" target-dir="src/host/holo/ptlib" />
+    </platform>
+
+    <!-- browser -->
+    <platform name="browser">
+        <config-file target="config.xml" parent="/*">
+            <feature name="PTLib">
+                <param name="browser-package" value="PTLib" />
+            </feature>
+        </config-file>
+
+        <js-module src="src/browser/PTLib.js" name="PTLib">
+            <runs />
+        </js-module>
+    </platform>
+
+</plugin>

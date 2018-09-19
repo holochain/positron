@@ -2,6 +2,7 @@
  * gulp build script for positron
  */
 
+const fs = require('fs')
 const path = require('path')
 const { spawn } = require('child_process')
 
@@ -139,6 +140,31 @@ gulp.task('build-electron', gulp.series(
   'build-pt-electron'
 ))
 
+gulp.task('check-android-home', async () => {
+  if (!('ANDROID_HOME' in process.env)) {
+    throw new Error('ANDROID_HOME not set')
+  }
+  if (!fs.statSync(path.join(process.env.ANDROID_HOME, 'ndk-bundle')).isDirectory()) {
+    throw new Error('`ndk-bundle` not found in ANDROID_HOME')
+  }
+})
+
+gulp.task('check-gradle', async () => {
+  try {
+    const { stdout } = await gspawn('gradle --version')
+    if (stdout.indexOf('Gradle 4.4') < 0) {
+      throw new Error('tmp')
+    }
+  } catch (e) {
+    throw new Error('gradle 4.4 not found in path, install?')
+  }
+})
+
+gulp.task('check-android-env', gulp.parallel(
+  'check-android-home',
+  'check-gradle'
+))
+
 gulp.task('build-ptlib-android', async () => {
   await gspawn('./gradlew build', {
     cwd: path.join(__dirname, 'ptlib-android'),
@@ -146,7 +172,67 @@ gulp.task('build-ptlib-android', async () => {
   })
 })
 
+gulp.task('build-pt-cordova:android', async () => {
+  await gspawn('npm install', {
+    cwd: path.join(__dirname, 'pt-cordova')
+  })
+  const cordovaRoot = path.join(__dirname, 'pt-cordova', 'app')
+  await gspawn('../node_modules/.bin/cordova prepare', {
+    cwd: cordovaRoot
+  })
+  await gspawn('../node_modules/.bin/cordova platform rm android', {
+    cwd: cordovaRoot
+  })
+  await gspawn('../node_modules/.bin/cordova platform add android', {
+    cwd: cordovaRoot
+  })
+  const androidRoot = path.join(cordovaRoot, 'platforms/android')
+  const ptlib = path.join(androidRoot, 'ptlib-release')
+
+  fs.mkdirSync(ptlib)
+
+  console.log('copy ptlib-release.aar')
+  fs.writeFileSync(
+    path.join(ptlib, 'ptlib-release.aar'),
+    fs.readFileSync(
+      path.join(__dirname, 'ptlib-android', 'ptlib', 'build', 'outputs', 'aar', 'ptlib-release.aar')))
+
+  console.log('add ptlib-release.aar build.gradle')
+  fs.writeFileSync(
+    path.join(ptlib, 'build.gradle'),
+    'configurations.maybeCreate("default")\n' +
+    'artifacts.add("default", file(\'ptlib-release.aar\'))')
+
+  console.log('clobber settings.gradle')
+  fs.writeFileSync(
+    path.join(androidRoot, 'settings.gradle'),
+    fs.readFileSync(
+      path.join(androidRoot, 'settings.gradle')) + '\ninclude ":ptlib-release"')
+
+  console.log('fix AndroidManifest')
+  const manifest = path.join(androidRoot, 'app', 'src', 'main', 'AndroidManifest.xml')
+  fs.writeFileSync(
+    manifest,
+    fs.readFileSync(manifest).toString().replace(/minSdkVersion="\d\d"/, 'minSdkVersion="19"'))
+
+  console.log('add dependency')
+  const buildGradle = path.join(androidRoot, 'app', 'build.gradle')
+  fs.writeFileSync(
+    buildGradle,
+    fs.readFileSync(buildGradle).toString().replace(/SUB-PROJECT\s+DEPENDENCIES\s+END/, 'SUB-PROJECT DEPENDENCIES END\nimplementation project(\':ptlib-release\')'))
+
+  await gspawn('gradle wrapper --gradle-version 4.4', {
+    cwd: androidRoot
+  })
+  await gspawn('./gradlew build', {
+    cwd: androidRoot,
+    shell: true
+  })
+})
+
 gulp.task('build-android', gulp.series(
+  'check-android-env',
   'build-ptlib',
-  'build-ptlib-android'
+  'build-ptlib-android',
+  'build-pt-cordova:android'
 ))

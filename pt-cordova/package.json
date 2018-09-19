@@ -4,7 +4,10 @@
   "description": "cordova apps built with positron",
   "main": "lib/index.js",
   "license": "Apache-2.0",
-  "scripts": {},
+  "scripts": {
+    "android": "cd $INIT_CWD/app && cordova plugin rm cordova-plugin-ptlib && cordova plugin add ../cordova-plugin-ptlib && cordova build android && cordova run android",
+    "browser": "cd $INIT_CWD/app && cordova plugin rm cordova-plugin-ptlib && cordova plugin add ../cordova-plugin-ptlib && cordova build browser && cordova run browser"
+  },
   "dependencies": {},
   "devDependencies": {
     "chai": "^4.1.2",
